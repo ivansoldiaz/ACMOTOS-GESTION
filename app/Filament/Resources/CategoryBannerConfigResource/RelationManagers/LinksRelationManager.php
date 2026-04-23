@@ -10,7 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class LinksRelationManager extends RelationManager
@@ -60,9 +59,13 @@ class LinksRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->query(
+                CategoryBannerLink::query()
+                    ->where('id_config', $this->getOwnerRecord()->getKey())
+                    ->with(['langs', 'targetCategoryLang'])
+            )
             ->reorderable('position')
             ->defaultSort('position')
-            ->modifyQueryUsing(fn (Builder $q) => $q->with(['langs', 'targetCategoryLang']))
             ->columns([
                 Tables\Columns\TextColumn::make('position')
                     ->label('#')
