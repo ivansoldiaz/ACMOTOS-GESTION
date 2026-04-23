@@ -79,6 +79,21 @@ return [
             ]) : [],
         ],
 
+        'prestashop' => [
+            'driver' => 'mysql',
+            'host' => env('DB_PRESTASHOP_HOST', '127.0.0.1'),
+            'port' => env('DB_PRESTASHOP_PORT', '3307'),
+            'database' => env('DB_PRESTASHOP_DATABASE', 'prestashop'),
+            'username' => env('DB_PRESTASHOP_USERNAME', 'gestion_app'),
+            'password' => env('DB_PRESTASHOP_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
