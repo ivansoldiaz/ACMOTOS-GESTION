@@ -53,9 +53,13 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->navigationGroups([
+                'Administración',
+            ])
             ->plugins([
                 FilamentShieldPlugin::make(),
-                ActivitylogPlugin::make(),
+                ActivitylogPlugin::make()
+                    ->navigationGroup('Administración'),
             ])
             ->authMiddleware([
                 Authenticate::class,
