@@ -17,6 +17,8 @@ class LinksRelationManager extends RelationManager
 {
     protected static string $relationship = 'links';
 
+    protected static bool $isLazy = false;
+
     protected static ?string $title = 'Banners de esta categoría';
 
     protected static ?string $modelLabel = 'Banner';
