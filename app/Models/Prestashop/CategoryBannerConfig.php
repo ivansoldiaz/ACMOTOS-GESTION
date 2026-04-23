@@ -43,7 +43,6 @@ class CategoryBannerConfig extends PrestashopModel
 
     public function links(): HasMany
     {
-        return $this->hasMany(CategoryBannerLink::class, 'id_config', 'id_config')
-            ->orderBy('position');
+        return $this->hasMany(CategoryBannerLink::class, 'id_config', 'id_config');
     }
 }
