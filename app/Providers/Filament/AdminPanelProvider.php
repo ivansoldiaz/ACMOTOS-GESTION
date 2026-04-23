@@ -54,6 +54,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->navigationGroups([
+                'Contenidos web',
                 'Administración',
             ])
             ->plugins([
