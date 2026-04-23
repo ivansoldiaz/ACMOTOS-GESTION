@@ -5,6 +5,7 @@ namespace App\Models\Prestashop;
 use App\Services\Prestashop\LanguageService;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -44,6 +45,12 @@ class CategoryBannerLink extends PrestashopModel
     public function targetCategory(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'id_target_category', 'id_category');
+    }
+
+    public function targetCategoryLang(): HasOne
+    {
+        return $this->hasOne(CategoryLang::class, 'id_category', 'id_target_category')
+            ->where('id_lang', LanguageService::LANG_ES);
     }
 
     public function langs(): HasMany

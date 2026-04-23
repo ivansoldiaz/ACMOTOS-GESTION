@@ -4,15 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryBannerConfigResource\Pages;
 use App\Filament\Resources\CategoryBannerConfigResource\RelationManagers\LinksRelationManager;
-use App\Models\Prestashop\Category;
 use App\Models\Prestashop\CategoryBannerConfig;
+use App\Models\Prestashop\CategoryLang;
 use App\Services\Prestashop\LanguageService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class CategoryBannerConfigResource extends Resource
 {
@@ -41,27 +40,20 @@ class CategoryBannerConfigResource extends Resource
                     ->getSearchResultsUsing(function (string $search) {
                         $usedIds = CategoryBannerConfig::query()->pluck('id_category')->all();
 
-                        return Category::query()
-                            ->whereNotIn('ps_category.id_category', $usedIds)
-                            ->join('ps_category_lang as cl', function ($join) {
-                                $join->on('cl.id_category', '=', 'ps_category.id_category')
-                                    ->where('cl.id_lang', LanguageService::LANG_ES);
-                            })
-                            ->where('cl.name', 'like', "%{$search}%")
-                            ->orderBy('cl.name')
+                        return CategoryLang::query()
+                            ->where('id_lang', LanguageService::LANG_ES)
+                            ->whereNotIn('id_category', $usedIds)
+                            ->where('name', 'like', "%{$search}%")
+                            ->orderBy('name')
                             ->limit(50)
-                            ->pluck('cl.name', 'ps_category.id_category')
+                            ->pluck('name', 'id_category')
                             ->all();
                     })
-                    ->getOptionLabelUsing(function ($value): ?string {
-                        return Category::query()
-                            ->join('ps_category_lang as cl', function ($join) {
-                                $join->on('cl.id_category', '=', 'ps_category.id_category')
-                                    ->where('cl.id_lang', LanguageService::LANG_ES);
-                            })
-                            ->where('ps_category.id_category', $value)
-                            ->value('cl.name');
-                    }),
+                    ->getOptionLabelUsing(fn ($value) => CategoryLang::query()
+                        ->where('id_category', $value)
+                        ->where('id_lang', LanguageService::LANG_ES)
+                        ->value('name')
+                    ),
 
                 Forms\Components\Select::make('template')
                     ->label('Template')
@@ -74,38 +66,15 @@ class CategoryBannerConfigResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $q) => $q
-                ->addSelect([
-                    'category_name' => Category::query()
-                        ->join('ps_category_lang as cl', function ($join) {
-                            $join->on('cl.id_category', '=', 'ps_category.id_category')
-                                ->where('cl.id_lang', LanguageService::LANG_ES);
-                        })
-                        ->whereColumn('ps_category.id_category', 'ps_ac_category_banners_config.id_category')
-                        ->select('cl.name')
-                        ->limit(1),
-                ])
-                ->withCount('links')
-            )
             ->columns([
                 Tables\Columns\TextColumn::make('id_category')
                     ->label('ID')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('category_name')
+                Tables\Columns\TextColumn::make('categoryLang.name')
                     ->label('Categoría')
-                    ->searchable(query: function (Builder $query, string $search): Builder {
-                        $ids = Category::query()
-                            ->join('ps_category_lang as cl', function ($join) {
-                                $join->on('cl.id_category', '=', 'ps_category.id_category')
-                                    ->where('cl.id_lang', LanguageService::LANG_ES);
-                            })
-                            ->where('cl.name', 'like', "%{$search}%")
-                            ->pluck('ps_category.id_category')
-                            ->all();
-
-                        return $query->whereIn('id_category', $ids);
-                    }),
+                    ->searchable()
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('template')
                     ->label('Template')
@@ -113,6 +82,7 @@ class CategoryBannerConfigResource extends Resource
 
                 Tables\Columns\TextColumn::make('links_count')
                     ->label('Banners')
+                    ->counts('links')
                     ->alignCenter()
                     ->badge()
                     ->color(fn (int $state) => $state > 0 ? 'success' : 'gray'),

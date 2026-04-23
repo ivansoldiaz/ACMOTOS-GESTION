@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\CategoryBannerConfigResource\RelationManagers;
 
-use App\Models\Prestashop\Category;
 use App\Models\Prestashop\CategoryBannerLink;
+use App\Models\Prestashop\CategoryLang;
 use App\Services\Prestashop\LanguageService;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -31,24 +31,18 @@ class LinksRelationManager extends RelationManager
                     ->label('Categoría destino')
                     ->required()
                     ->searchable()
-                    ->getSearchResultsUsing(fn (string $search) => Category::query()
-                        ->join('ps_category_lang as cl', function ($join) {
-                            $join->on('cl.id_category', '=', 'ps_category.id_category')
-                                ->where('cl.id_lang', LanguageService::LANG_ES);
-                        })
-                        ->where('cl.name', 'like', "%{$search}%")
-                        ->orderBy('cl.name')
+                    ->getSearchResultsUsing(fn (string $search) => CategoryLang::query()
+                        ->where('id_lang', LanguageService::LANG_ES)
+                        ->where('name', 'like', "%{$search}%")
+                        ->orderBy('name')
                         ->limit(50)
-                        ->pluck('cl.name', 'ps_category.id_category')
+                        ->pluck('name', 'id_category')
                         ->all()
                     )
-                    ->getOptionLabelUsing(fn ($value) => Category::query()
-                        ->join('ps_category_lang as cl', function ($join) {
-                            $join->on('cl.id_category', '=', 'ps_category.id_category')
-                                ->where('cl.id_lang', LanguageService::LANG_ES);
-                        })
-                        ->where('ps_category.id_category', $value)
-                        ->value('cl.name')
+                    ->getOptionLabelUsing(fn ($value) => CategoryLang::query()
+                        ->where('id_category', $value)
+                        ->where('id_lang', LanguageService::LANG_ES)
+                        ->value('name')
                     ),
 
                 Forms\Components\TextInput::make('anchor_text_es')
@@ -66,35 +60,16 @@ class LinksRelationManager extends RelationManager
         return $table
             ->reorderable('position')
             ->defaultSort('position')
-            ->modifyQueryUsing(fn (Builder $q) => $q->with('langs'))
+            ->modifyQueryUsing(fn (Builder $q) => $q->with(['langs', 'targetCategoryLang']))
             ->columns([
                 Tables\Columns\TextColumn::make('position')
                     ->label('#')
                     ->width(40)
                     ->alignCenter(),
 
-                Tables\Columns\TextColumn::make('targetCategory')
+                Tables\Columns\TextColumn::make('targetCategoryLang.name')
                     ->label('Categoría destino')
-                    ->state(fn (CategoryBannerLink $record) => Category::query()
-                        ->join('ps_category_lang as cl', function ($join) {
-                            $join->on('cl.id_category', '=', 'ps_category.id_category')
-                                ->where('cl.id_lang', LanguageService::LANG_ES);
-                        })
-                        ->where('ps_category.id_category', $record->id_target_category)
-                        ->value('cl.name')
-                    )
-                    ->searchable(query: function (Builder $query, string $search): Builder {
-                        $ids = Category::query()
-                            ->join('ps_category_lang as cl', function ($join) {
-                                $join->on('cl.id_category', '=', 'ps_category.id_category')
-                                    ->where('cl.id_lang', LanguageService::LANG_ES);
-                            })
-                            ->where('cl.name', 'like', "%{$search}%")
-                            ->pluck('ps_category.id_category')
-                            ->all();
-
-                        return $query->whereIn('id_target_category', $ids);
-                    }),
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('anchor_text_es')
                     ->label('Texto ES')
