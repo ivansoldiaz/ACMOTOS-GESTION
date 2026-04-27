@@ -50,8 +50,10 @@ class LgSeoRedirectResource extends Resource
                     ->label('URL nueva')
                     ->placeholder('https://acmotos.com/es/cascos')
                     ->required()
+                    ->url()
                     ->maxLength(2048)
-                    ->helperText('URL a la que se redirigirá. Suele ser absoluta (https://acmotos.com/...).')
+                    ->default('https://acmotos.com/')
+                    ->helperText('URL absoluta a la que se redirigirá. En la mayoría de casos https://acmotos.com/... — para otros dominios, sustituye el prefijo.')
                     ->columnSpanFull(),
             ]);
     }
