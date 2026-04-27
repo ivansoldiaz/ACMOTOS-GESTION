@@ -56,8 +56,9 @@ class CompatModelsUppercase extends Page implements HasForms
 
         $output = $service->applyToTsv($input);
 
-        activity()
+        activity('proceso')
             ->causedBy(auth()->user())
+            ->event('capitalizar_modelos_tsv')
             ->withProperties([
                 'input_bytes' => strlen($input),
                 'output_bytes' => strlen($output),

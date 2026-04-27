@@ -96,8 +96,9 @@ class ProductBulkRedirect extends Page implements HasForms
         $result = $service->process($mode, $items);
         $this->lastRun = $result;
 
-        activity()
+        activity('proceso')
             ->causedBy(auth()->user())
+            ->event('redireccionar_productos_bulk')
             ->withProperties([
                 'identifier_mode' => $mode,
                 'input_raw' => $rawInput,
