@@ -56,6 +56,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Contenidos web',
                 'Tablas de compatibilidad',
+                'SEO / Redirecciones',
                 'Administración',
             ])
             ->plugins([

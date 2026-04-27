@@ -120,7 +120,7 @@ Tras el primer deploy de un Resource nuevo, además: `shield:generate --option=p
 
 ## Panel Filament
 
-- Navigation groups declarados en `AdminPanelProvider`: `['Contenidos web', 'Tablas de compatibilidad', 'Administración']`.
+- Navigation groups declarados en `AdminPanelProvider`: `['Contenidos web', 'Tablas de compatibilidad', 'SEO / Redirecciones', 'Administración']`.
 - Shield: el `navigation_group` del `config/filament-shield.php` es un **booleano** ("¿usar grupo?"), no el nombre. El nombre del grupo de Roles viene de la traducción `filament-shield::filament-shield.nav.group`, sobrescrita en `lang/vendor/filament-shield/{en,es}/filament-shield.php` a `Administración`.
 - ActivityLog: `->navigationGroup('Administración')` sí funciona en el plugin.
 - Usuario admin prod: `i.sol@acmotos.com` con rol `super_admin`.
