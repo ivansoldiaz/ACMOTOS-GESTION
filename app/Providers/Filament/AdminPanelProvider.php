@@ -55,6 +55,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 'Contenidos web',
+                'Tablas de compatibilidad',
                 'Administración',
             ])
             ->plugins([
