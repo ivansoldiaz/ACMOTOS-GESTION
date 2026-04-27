@@ -6,6 +6,7 @@ use App\Services\Prestashop\LanguageService;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -70,9 +71,14 @@ class CategoryBannerLink extends PrestashopModel
 
     public function setAnchorTextForLang(int $idLang, ?string $text): void
     {
-        $this->langs()->updateOrCreate(
-            ['id_lang' => $idLang],
-            ['anchor_text' => $text ?? ''],
-        );
+        // La tabla _lang tiene PK compuesta (id_link, id_lang), sin auto_increment.
+        // Eloquent::save() con $primaryKey=null genera un UPDATE con WHERE roto,
+        // así que bajamos al query builder para tener el WHERE correcto.
+        \Illuminate\Support\Facades\DB::connection('prestashop')
+            ->table('ps_ac_category_banners_links_lang')
+            ->updateOrInsert(
+                ['id_link' => $this->getKey(), 'id_lang' => $idLang],
+                ['anchor_text' => $text ?? ''],
+            );
     }
 }
