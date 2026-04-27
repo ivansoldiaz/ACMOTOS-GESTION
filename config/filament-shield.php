@@ -6,7 +6,10 @@ return [
         'slug' => 'shield/roles',
         'navigation_sort' => -1,
         'navigation_badge' => true,
-        'navigation_group' => 'Administración',
+        // El plugin trata esta clave como booleano (¿usar grupo de navegación?).
+        // El nombre del grupo viene de la traducción filament-shield::filament-shield.nav.group,
+        // que sobrescribimos en lang/vendor/filament-shield/{en,es}/filament-shield.php.
+        'navigation_group' => true,
         'sub_navigation_position' => null,
         'is_globally_searchable' => false,
         'show_model_path' => true,
