@@ -35,6 +35,14 @@ class LgSeoRedirectResource extends Resource
                     ->placeholder('/es/slug-producto-viejo')
                     ->required()
                     ->maxLength(2048)
+                    // Path relativo: una sola '/' inicial, no '//domain' ni
+                    // 'https?://...'. El módulo lg_seo_redirect matchea
+                    // contra el request URI (path), así que un valor
+                    // absoluto nunca dispararía la redirect.
+                    ->regex('/^\/[^\/]/')
+                    ->validationMessages([
+                        'regex' => 'La URL antigua debe ser un path relativo que empiece por una sola "/" (ej: /es/cascos-shoei-nxr), nunca una URL absoluta.',
+                    ])
                     // Tabla cualificada con la conexión para que Laravel
                     // valide contra prestashop.ps_lgseoredirect, no contra
                     // la conexión default mysql/gestion_acm.
