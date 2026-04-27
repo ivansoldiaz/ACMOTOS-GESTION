@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg 
-	id="acmotos-logotipo" 
-	xmlns="http://www.w3.org/2000/svg" 
-	viewBox="0 0 1317.96 228.54" 
+<svg
+	id="acmotos-logotipo"
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="0 0 1317.96 228.54"
 	fill="currentColor"
+	style="height: 2.25rem; width: auto;"
 	aria-hidden="true"
 	focusable="false">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M1058.56,185.98c0,0,127.27,21.66,202.43,21.66c17.12,0,35.56-2.12,35.56-2.12
