@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('ACMOTOS')
             ->brandLogo(fn () => view('filament.brand-logo'))
             ->brandLogoHeight('2.25rem')
+            ->favicon(asset('images/favicon.svg'))
             ->colors([
                 'primary' => Color::Amber,
             ])
